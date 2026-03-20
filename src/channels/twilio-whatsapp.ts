@@ -42,23 +42,6 @@ function parseFormBody(body: Buffer): Record<string, string> {
   return result;
 }
 
-/**
- * Convert Twilio's "whatsapp:+PHONE" format to NanoClaw JID.
- * e.g. "whatsapp:+14155551234" → "twilio:+14155551234"
- */
-function twilioToJid(twilioFrom: string): string {
-  const phone = twilioFrom.replace(/^whatsapp:/, '');
-  return `twilio:${phone}`;
-}
-
-/**
- * Convert NanoClaw JID back to Twilio "whatsapp:+PHONE" format.
- * e.g. "twilio:+14155551234" → "whatsapp:+14155551234"
- */
-function jidToTwilio(jid: string): string {
-  const phone = jid.replace(/^twilio:/, '');
-  return `whatsapp:${phone}`;
-}
 
 export class TwilioWhatsAppChannel implements Channel {
   name = 'twilio-whatsapp';
@@ -88,9 +71,7 @@ export class TwilioWhatsAppChannel implements Channel {
         console.log(
           `\n  Twilio WhatsApp webhook: http://0.0.0.0:${this.config.port}/webhook`,
         );
-        console.log(
-          `  Register chats with JID format: twilio:+PHONE\n`,
-        );
+        console.log(`  Register chats with JID format: whatsapp:+PHONE\n`);
         resolve();
       });
 
@@ -103,7 +84,7 @@ export class TwilioWhatsAppChannel implements Channel {
 
   async sendMessage(jid: string, text: string): Promise<void> {
     try {
-      const to = jidToTwilio(jid);
+      const to = jid;
 
       if (text.length <= MAX_MESSAGE_LENGTH) {
         await this.client.messages.create({
@@ -133,7 +114,7 @@ export class TwilioWhatsAppChannel implements Channel {
   }
 
   ownsJid(jid: string): boolean {
-    return jid.startsWith('twilio:');
+    return jid.startsWith('whatsapp:');
   }
 
   async disconnect(): Promise<void> {
@@ -220,7 +201,7 @@ export class TwilioWhatsAppChannel implements Channel {
       return;
     }
 
-    const chatJid = twilioToJid(from);
+    const chatJid = from;
     const phone = from.replace(/^whatsapp:/, '');
     const timestamp = new Date().toISOString();
 
