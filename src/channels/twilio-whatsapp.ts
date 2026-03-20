@@ -42,7 +42,6 @@ function parseFormBody(body: Buffer): Record<string, string> {
   return result;
 }
 
-
 export class TwilioWhatsAppChannel implements Channel {
   name = 'twilio-whatsapp';
 
@@ -178,9 +177,11 @@ export class TwilioWhatsAppChannel implements Channel {
 
         this.processInboundMessage(params);
 
-        // Respond with empty TwiML
+        // Respond with TwiML acknowledgement so the user gets immediate feedback
         res.writeHead(200, { 'Content-Type': 'text/xml' });
-        res.end('<Response/>');
+        res.end(
+          '<Response><Message>Message received, thinking...</Message></Response>',
+        );
       } catch (err) {
         logger.error({ err }, 'Error processing Twilio webhook');
         res.writeHead(500);
