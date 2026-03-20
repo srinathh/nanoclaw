@@ -10,5 +10,8 @@
 // telegram
 import './telegram.js';
 
+// twilio-whatsapp
+import './twilio-whatsapp.js';
+
 // whatsapp
 import './whatsapp.js';
