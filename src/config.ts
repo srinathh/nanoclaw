@@ -40,13 +40,19 @@ export const SENDER_ALLOWLIST_PATH = path.join(
   'sender-allowlist.json',
 );
 export const STORE_DIR = path.resolve(
-  process.env.NANOCLAW_STORE_DIR || envConfig.NANOCLAW_STORE_DIR || path.join(PROJECT_ROOT, 'store'),
+  process.env.NANOCLAW_STORE_DIR ||
+    envConfig.NANOCLAW_STORE_DIR ||
+    path.join(PROJECT_ROOT, 'store'),
 );
 export const GROUPS_DIR = path.resolve(
-  process.env.NANOCLAW_GROUPS_DIR || envConfig.NANOCLAW_GROUPS_DIR || path.join(PROJECT_ROOT, 'groups'),
+  process.env.NANOCLAW_GROUPS_DIR ||
+    envConfig.NANOCLAW_GROUPS_DIR ||
+    path.join(PROJECT_ROOT, 'groups'),
 );
 export const DATA_DIR = path.resolve(
-  process.env.NANOCLAW_DATA_DIR || envConfig.NANOCLAW_DATA_DIR || path.join(PROJECT_ROOT, 'data'),
+  process.env.NANOCLAW_DATA_DIR ||
+    envConfig.NANOCLAW_DATA_DIR ||
+    path.join(PROJECT_ROOT, 'data'),
 );
 
 export const CONTAINER_IMAGE =
