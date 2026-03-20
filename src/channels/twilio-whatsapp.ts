@@ -19,6 +19,7 @@ interface TwilioWhatsAppConfig {
   fromNumber: string; // e.g. "whatsapp:+14155238886"
   port: number;
   webhookUrl: string; // Public URL for signature validation (empty = skip validation)
+  ackMessage: string; // Immediate TwiML reply (empty = no ack)
 }
 
 interface TwilioWhatsAppChannelOpts {
@@ -177,11 +178,14 @@ export class TwilioWhatsAppChannel implements Channel {
 
         this.processInboundMessage(params);
 
-        // Respond with TwiML acknowledgement so the user gets immediate feedback
         res.writeHead(200, { 'Content-Type': 'text/xml' });
-        res.end(
-          '<Response><Message>Message received, thinking...</Message></Response>',
-        );
+        if (this.config.ackMessage) {
+          res.end(
+            `<Response><Message>${this.config.ackMessage}</Message></Response>`,
+          );
+        } else {
+          res.end('<Response/>');
+        }
       } catch (err) {
         logger.error({ err }, 'Error processing Twilio webhook');
         res.writeHead(500);
@@ -268,6 +272,7 @@ registerChannel('twilio-whatsapp', (opts: ChannelOpts) => {
     'TWILIO_WHATSAPP_FROM',
     'TWILIO_WEBHOOK_PORT',
     'TWILIO_WEBHOOK_URL',
+    'TWILIO_ACK_MESSAGE',
   ]);
 
   const accountSid =
@@ -282,6 +287,8 @@ registerChannel('twilio-whatsapp', (opts: ChannelOpts) => {
   );
   const webhookUrl =
     process.env.TWILIO_WEBHOOK_URL || envVars.TWILIO_WEBHOOK_URL || '';
+  const ackMessage =
+    process.env.TWILIO_ACK_MESSAGE || envVars.TWILIO_ACK_MESSAGE || '';
 
   if (!accountSid || !authToken || !fromNumber) {
     logger.warn('Twilio WhatsApp: credentials not set, skipping');
@@ -295,7 +302,7 @@ registerChannel('twilio-whatsapp', (opts: ChannelOpts) => {
   }
 
   return new TwilioWhatsAppChannel(
-    { accountSid, authToken, fromNumber, port, webhookUrl },
+    { accountSid, authToken, fromNumber, port, webhookUrl, ackMessage },
     opts,
   );
 });
