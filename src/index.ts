@@ -318,7 +318,11 @@ async function runAgent(
   group: RegisteredGroup,
   prompt: string,
   chatJid: string,
-  imageAttachments: Array<{ relativePath: string; mediaType: string; originalRelativePath: string }>,
+  imageAttachments: Array<{
+    relativePath: string;
+    mediaType: string;
+    originalRelativePath: string;
+  }>,
   onOutput?: (output: ContainerOutput) => Promise<void>,
 ): Promise<'success' | 'error'> {
   const isMain = group.isMain === true;
